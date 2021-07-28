@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 // Impotr DB User yang login
 use Auth;
 
-Trait TraitLike
+trait TraitLike
 {
     // ----------------------- polymorphic (One to Many) LIKE
     public function likes()

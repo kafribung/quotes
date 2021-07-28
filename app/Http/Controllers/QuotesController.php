@@ -27,16 +27,15 @@ class QuotesController extends Controller
     {
         $cari = urlencode($request->input('search'));
 
-        if (!empty($cari )) {
-            $quotes = Quote::with('user', 'tags')->where('title', 'like', '%'. $cari.'%')->get();
+        if (!empty($cari)) {
+            $quotes = Quote::with('user', 'tags')->where('title', 'like', '%' . $cari . '%')->get();
         } else
 
 
-        $quotes = Quote::with('user', 'tags')->orderBy('id', 'DESC')->get();
+            $quotes = Quote::with('user', 'tags')->orderBy('id', 'DESC')->get();
         $tags   = Tag::all();
 
         return view('quotes/quotes', compact('quotes', 'tags'));
-
     }
 
     // URL CREATE
@@ -50,7 +49,7 @@ class QuotesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'       => ['required', 'string', 'min:3' , 'max:50'],
+            'title'       => ['required', 'string', 'min:3', 'max:50'],
             'description' => ['required', 'string', 'min:3', 'unique:quotes']
         ]);
 
@@ -62,8 +61,8 @@ class QuotesController extends Controller
         }
 
         // --------------------Validasi Tags
-        $data =  array_unique (array_diff($request->tag, [0]));
-        if(empty($data) ){
+        $data =  array_unique(array_diff($request->tag, [0]));
+        if (empty($data)) {
             return redirect('/quotes/create')->withInput($request->input())->with('msg', 'Tags cannot empty !');
         }
         // --------------------Validasi Tag
@@ -95,14 +94,13 @@ class QuotesController extends Controller
         $tags  = Tag::all();
 
         return view('quotes.quotesEdit', compact('quote', 'tags'));
-
     }
 
     //UPDATE
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title'       => ['required', 'string', 'min:3' , 'max:50'],
+            'title'       => ['required', 'string', 'min:3', 'max:50'],
             'description' => ['required', 'string', 'min:3']
         ]);
 
@@ -117,8 +115,8 @@ class QuotesController extends Controller
 
         // ------------------------Validasi  Tag
         $data = array_unique(array_diff($request->tag, [0]));
-        if (empty($data) ) {
-            return redirect('/quotes/' . $quote->slug .'/edit')->withInput($request->input())->with('msg', 'Tags cannot empty !');
+        if (empty($data)) {
+            return redirect('/quotes/' . $quote->slug . '/edit')->withInput($request->input())->with('msg', 'Tags cannot empty !');
         }
         // ------------------------End Validasi
         $quote->tags()->sync($data);
@@ -130,7 +128,6 @@ class QuotesController extends Controller
         ]);
 
         return redirect('/quotes')->with('msg', 'Quote Updated Successfully');
-
     }
 
     // DELETE
@@ -153,12 +150,11 @@ class QuotesController extends Controller
     // PROFILE
     public function profile($id = null)
     {
-        if($id == null) {
+        if ($id == null) {
             $user = User::findOrFail(Auth::user()->id);
         } else  $user = User::fIndOrFail($id);
 
         return view('quotes.quotesProfile', compact('user'));
-
     }
 
     //FILTER
@@ -166,11 +162,10 @@ class QuotesController extends Controller
     {
         $tags = Tag::all();
 
-        $quotes = Quote::with('tags')->whereHas('tags', function($query) use($tag){
+        $quotes = Quote::with('tags')->whereHas('tags', function ($query) use ($tag) {
             $query->where('tag', $tag);
         })->get();
 
         return view('quotes.quotes', compact('quotes', 'tags'));
     }
-
 }
